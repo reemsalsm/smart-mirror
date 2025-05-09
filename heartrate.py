@@ -76,9 +76,6 @@ class HeartRateMonitor:
         self.initialized = False
         
         self.setup_sensor()
-        self.contact_threshold = 30000  # Adjust based on your sensor
-        self.contact_samples = 0
-        self.contact_required = 5  # Number of consecutive samples needed
     
     def setup_sensor(self):
         try:
@@ -115,10 +112,6 @@ class HeartRateMonitor:
         
         red, ir = self.read_fifo()
         self.ir_history.append(ir)
-
-        # Simple finger detection - if IR value too low, ignore
-        if ir < self.min_ir_threshold:
-            return None
         
         # Dynamic threshold with fast adaptation
         threshold = np.percentile(list(self.ir_history)[-10:], 80) * 1.1 if len(self.ir_history) > 10 else 30000
@@ -651,14 +644,10 @@ class MainScreen(BoxLayout):
         self.password_input = ""
         self.current_mode = None
         self.cap = None
-        self.last_reading_time = 0
-        self.display_duration = 5
         self.voice_assistant = VoiceAssistant()
         self.voice_listening = False
         self.clock_event = None
         self.heart_rate_event = None
-        self.last_valid_reading = None
-        self.reading_expire_time = 0
 
         # Initialize heart rate monitor with improved logic
         self.heart_rate_monitor = HeartRateMonitor()
@@ -683,37 +672,40 @@ class MainScreen(BoxLayout):
         except Exception as e:
             print(f"Clock update error: {e}")
     
-    def update_heart_rate(self, dt):
-        current_time = time.time()
-        if (current_time - self.last_reading_time > 1.0 or
-            current_time - self.last_reading_time > self.display_duration):
+        def update_heart_rate(self, dt):
+            bpm = self.heart_rate_monitor.update()
 
-        bpm = self.heart_rate_monitor.update()
+            if bpm is not None:
+        # Only update if we don't already have a valid reading
+                if not hasattr(self, 'last_hr_update') or time.time() - self.last_hr_update > 5:  # 5 seconds between updates
+                    self.ids.heart_rate.text = f"Heart Rate: {bpm} BPM"
+                    self.last_hr_update = time.time()
+            
+            # Schedule clearing the display after 3 seconds
+                    Clock.schedule_once(lambda dt: self.clear_hr_display(), 3)
 
-        if bpm is not None:
-            self.last_valid_reading = bpm
-            self.reading_expire_time = current_time + 5  # Show for 5 seconds
-            
-        # Display logic
-        if current_time < self.reading_expire_time and self.last_valid_reading:
-            # Show last valid reading
-            self.ids.heart_rate.text = f"Heart Rate: {self.last_valid_reading} BPM"
-            
-            # Status coloring
-            if self.last_valid_reading < 60:
-                self.ids.status.text = "Status: Low Heart Rate"
-                self.ids.status.color = (0, 0, 1, 1)
-            elif self.last_valid_reading > 100:
-                self.ids.status.text = "Status: High Heart Rate"
-                self.ids.status.color = (1, 0, 0, 1)
+            # Update status based on heart rate
+                    if bpm < 60:
+                        self.ids.status.text = "Status: Low Heart Rate"
+                        self.ids.status.color = (0, 0, 1, 1)  # Blue
+                    elif bpm > 100:
+                        self.ids.status.text = "Status: High Heart Rate"
+                        self.ids.status.color = (1, 0, 0, 1)  # Red
+                    else:
+                        self.ids.status.text = "Status: Normal"
+                        self.ids.status.color = (0, 0.7, 0, 1)  # Green
             else:
-                self.ids.status.text = "Status: Normal"
-                self.ids.status.color = (0, 0.7, 0, 1)
-        else:
-            # No recent valid reading
-            self.ids.heart_rate.text = "Heart Rate: -- BPM"
-            self.ids.status.text = "Place finger on sensor"
-            self.ids.status.color = (0.2, 0.2, 0.2, 1)
+        # Only show this if we don't have a recent reading
+                if not hasattr(self, 'last_hr_update') or time.time() - self.last_hr_update > 5:
+                    self.ids.heart_rate.text = "Heart Rate: -- BPM"
+                    self.ids.status.text = "Status: Place finger on sensor"
+                    self.ids.status.color = (0.2, 0.2, 0.2, 1)
+
+    def clear_hr_display(self):
+        """Clear the heart rate display after the timeout period"""
+        self.ids.heart_rate.text = "Heart Rate: -- BPM"
+        self.ids.status.text = "Status: Waiting for reading..."
+        self.ids.status.color = (0.2, 0.2, 0.2, 1)
     
     def show_keypad(self):
         self.ids.keypad.opacity = 1
