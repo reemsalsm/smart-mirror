@@ -1,4 +1,4 @@
-## 👨‍💻 Author
+## 👩‍💻 Author
 
 **Reem Ali Salem**  
 Coventry University – BEng Electrical and Electronic Engineering  
