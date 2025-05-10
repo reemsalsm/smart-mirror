@@ -1,12 +1,26 @@
+## 👨‍💻 Author
+
+**Reem Ali Salem**  
+Coventry University – BEng Electrical and Electronic Engineering  
+Student ID: 202200411  
+Graduation Year: 2025  
+Project Title: AI-Powered Smart Mirror for Health & Safety Monitoring  
+Supervisor: Dr. Mostafa Rabie
+
+
+
+
+
+
 # 🪞 AI-Powered Smart Mirror – Health & Safety Assistant
 
 This is a **real-time, AI-enhanced Smart Mirror** project developed for my graduation thesis at Coventry University. The system leverages **computer vision, natural language processing, physiological monitoring, and emergency response** capabilities to offer an intelligent and interactive user experience – all running on edge devices like the **Raspberry Pi 4B**.
 
 ---
 
-## 🚀 Features
+##  Features
 
-### ✅ Health Monitoring
+###  Health Monitoring
 - **Heart Rate & SpO2** using MAX30102
 - Adaptive thresholding for accurate readings
 - Real-time UI display with alerts
@@ -50,6 +64,26 @@ This is a **real-time, AI-enhanced Smart Mirror** project developed for my gradu
 
 ---
 
+## 📊 Performance
+
+| Feature           | Accuracy |
+|-------------------|----------|
+| Heart Rate Alerts | ~98%     |
+| Emotion Detection | ~89%     |
+| Face Auth         | ~92%     |
+| Voice Assistant   | ~95%     |
+| Workout Tracking  | ~90%     |
+
+## 🧠 Future Work
+
+- 🧴 **CNN-Based Skin Analysis**: Replace HSV with deep learning for precision skincare detection.
+- 🌐 **Multilingual NLP**: Add Arabic + French support for Whisper and Zephyr.
+- 🥽 **AR Overlays**: Feedback layers for workout correction and accessibility.
+- ☁️ **Cloud Backup + Mobile App**: Log vitals remotely and sync with iOS/Android.
+- 📡 **Offline SOS**: Integrate SIM800L for emergency SMS without internet.
+- 🔒 **Multi-User Roles & AES Encryption**: Admin/Guest login and encrypted credentials.
+
+
 ## 🛠 Setup Instructions
 
 ### ⚙️ Prerequisites
@@ -63,3 +97,5 @@ This is a **real-time, AI-enhanced Smart Mirror** project developed for my gradu
 
 ```bash
 pip install -r requirements.txt
+
+
