@@ -1,0 +1,13 @@
+pygame
+pyttsx3
+requests
+sounddevice
+opencv-python
+mediapipe
+numpy
+python-dotenv
+faster-whisper
+twilio
+kivy
+pytz
+smbus
