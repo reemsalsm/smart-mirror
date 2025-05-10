@@ -47,8 +47,8 @@ except Exception as e:
     print(f"Audio initialization error: {e}")
 
 # Configuration (remove sensitive data before sharing)
-TWILIO_SID = "AC1f14d8e95e9d3671305b17ed1fa41712"
-TWILIO_AUTH_TOKEN = "149b153e893981763dd4574a8bf9fc16"
+TWILIO_SID = "*******************"
+TWILIO_AUTH_TOKEN = "******************"
 TWILIO_PHONE = "+18312735198"
 EMERGENCY_CONTACT = "+201013577939"
 SOS_PASSWORD = "1234"
